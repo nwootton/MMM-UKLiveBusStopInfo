@@ -1,7 +1,7 @@
 # MMM-UKLiveBusStopInfo
 Additional Module for MagicMirror²  https://github.com/MichMich/MagicMirror/tree/v2-beta
 
-# Module: UKNationalRail
+# Module: UKLiveBusStopInfo
 Magic Mirror Module for UK bus information. Returns real-time info about a SPECIFIC bus stop.
 
 ## Using the module
