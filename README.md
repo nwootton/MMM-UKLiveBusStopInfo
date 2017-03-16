@@ -14,10 +14,10 @@ modules: [
 		module: 'MMM-UKLiveBusStopInfo',
 		position: 'bottom_left',
 		config: {
-			atcocode: 		'SUR', 		// ATCO code for specific bus stop
-			app_id: 			'03bf8009', 	// TransportAPI App ID
-			app_key: 			'd9307fd91b0247c607e098d5effedc97', // TransportAPI App Key
-			limit: 		5  //Optional - Maximum results to display.
+			atcocode: 	'490015165B', 				// ATCO code for specific bus stop
+			app_id: 	'03bf8009', 				// TransportAPI App ID
+			app_key: 	'd9307fd91b0247c607e098d5effedc97', 	// TransportAPI App Key
+			limit: 		5  					//Optional - Maximum results to display.
 		}
 	},
 ]
