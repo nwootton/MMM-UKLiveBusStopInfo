@@ -140,7 +140,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 	updateTimetable: function() {
 
 		var url = this.config.apiBase + this.config.atcocode + '/live.json' + this.getParams();
-		console.log(url);
+		Log.info(url);
 
 		var self = this;
 		var retry = true;
@@ -189,6 +189,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		params += "&group=" + this.config.group;
 
+		Log.info(params);
 		return params;
 	},
 
