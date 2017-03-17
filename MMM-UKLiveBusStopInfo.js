@@ -1,7 +1,7 @@
-/* Timetable for Trains Module */
+/* Live Bus Stop Info */
 
 /* Magic Mirror
- * Module: UK National Rail
+ * Module: UK Live Bus Stop Info
  *
  * By Nick Wootton
  * based on SwissTransport module by Benjamin Angst http://www.beny.ch
@@ -26,7 +26,11 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		group:			'no', //Stops buses being grouped by route
 
 		limit: 			'', 	//Maximum number of results to display
-		nextBuses: 	'' 		//Use NextBuses API calls
+		nextBuses: 	'', 		//Use NextBuses API calls
+
+		titleReplace: {
+			"Zeittabelle ": ""
+		},
 	},
 
 	// Define required scripts.
@@ -77,41 +81,37 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		}
 
 		if (!this.loaded) {
-			wrapper.innerHTML = "Loading bus info ...";
+			wrapper.innerHTML = "Loading bus Info ...";
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
 
-		var title = document.createElement("div");
-
-		title.innerHTML = this.busStopName;
-		wrapper.appendChild(title);
-
-		var table = document.createElement("table");
-		table.className = "small";
+		var bustable = document.createElement("table");
+		bustable.className = "small";
 
 		for (var t in this.buses) {
-			var buses = this.buses[t];
+			var bus = this.buses[t];
 
 			var row = document.createElement("tr");
-			table.appendChild(row);
+			bustable.appendChild(row);
+
+      //Departure Time
+			var departureTimeCell = document.createElement("td");
+			departureTimeCell.innerHTML = bus.departure;
+			departureTimeCell.className = "align-right bright";
+			row.appendChild(departureTimeCell);
 
 			//Route name/Number
 			var routeCell = document.createElement("td");
-			routeCell.className = "busRoute";
-			routeCell.innerHTML = buses.routeName;
+			routeCell.className = "align-centre";
+			routeCell.innerHTML = " " + bus.routeName + " ";
 			row.appendChild(routeCell);
 
 			//Direction Info
 			var directionCell = document.createElement("td");
-			directionCell.className = "direction";
-			directionCell.innerHTML = buses.direction;
+			directionCell.className = "align-right dest";
+			directionCell.innerHTML = bus.direction;
 			row.appendChild(directionCell);
-
-			var departureTimeCell = document.createElement("td");
-			departureTimeCell.innerHTML = buses.departure;
-			departureTimeCell.className = "align-right bright";
-			row.appendChild(departureTimeCell);
 
 
 			if (this.config.fade && this.config.fadePoint < 1) {
@@ -128,36 +128,37 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		}
 
-		wrapper.appendChild(table);
-
-		return wrapper;
+		return bustable;
 	},
 
-	/*
-	 * Requests new data from transport API
-	 * Calls processTrains on succesfull response.
+	/* updateTimetable()
+	 * Requests new data from TransportAPI.com
+	 * Calls processBuses on succesfull response.
 	 */
 	updateTimetable: function() {
-
 		var url = this.config.apiBase + this.config.atcocode + '/live.json' + this.getParams();
 		Log.info(url);
 
 		var self = this;
 		var retry = true;
 
-		var transportRequest = new XMLHttpRequest();
-		transportRequest.open("GET", url, true);
-		transportRequest.onreadystatechange = function() {
+		var busInfoRequest = new XMLHttpRequest();
+
+		busInfoRequest.open("GET", url, true);
+
+    busInfoRequest.onreadystatechange = function() {
 			if (this.readyState === 4) {
 				if (this.status === 200) {
-					self.processTransport(JSON.parse(this.response));
-				} else if (this.status === 401) {
+          self.processBuses(JSON.parse(this.response));
+				}
+        else if (this.status === 401) {
 					self.config.id = "";
-					self.updateDom(self.config.animationSpeed);
+					self.updateDom(this.config.animationSpeed);
 
-					Log.error(self.name + ": Big error");
+					Log.error(self.name + ": Error 401");
 					retry = false;
-				} else {
+				}
+        else {
 					Log.error(self.name + ": Could not load buses.");
 				}
 
@@ -166,12 +167,11 @@ Module.register("MMM-UKLiveBusStopInfo",{
 				}
 			}
 		};
-		transportRequest.send();
+		busInfoRequest.send();
 	},
 
-	/* getParams(compliments)
+	/* getParams()
 	 * Generates an url with api parameters based on the config.
-	 *
 	 * return String - URL params.
 	 */
 	getParams: function() {
@@ -193,37 +193,35 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		return params;
 	},
 
-	/* processTrains(data)
-	 * Uses the received data to set the various values.
-	 *
-	 * argument data object - Weather information received form openweather.org.
+	/* processBuses(data)
+	 * Uses the received data to set the various values into a new array.
 	 */
-	processTransport: function(data) {
+	processBuses: function(data) {
+    //Log.info("In processBuses");
+    this.busStopName = data.stop_name;
 
-		this.busStopName = data.stop_name;
+    this.buses = [];
+    var counter = data.departures.all.length;
 
-		this.buses = [];
-		var counter = data.departures.all.length;
+    for (var i = 0; i < counter; i++) {
 
-		for (var i = 0; i < counter; i++) {
+      var bus = data.departures.all[i];
+      //Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
+      this.buses.push({
 
-			var buses = data.departures.all[i];
-			this.buses.push({
+        routeName: bus.line_name,
+        direction: bus.direction,
+        departure: bus.expected_departure_time
+      });
+    }
 
-				routeName: buses.line_name,
-				direction: buses.direction,
-				departure: buses.expected_departure_time
+    this.loaded = true;
 
-			});
-		}
-
-		this.loaded = true;
-		this.updateDom(this.config.animationSpeed);
-	},
+    this.updateDom(this.config.animationSpeed);
+  },
 
 	/* scheduleUpdate()
 	 * Schedule next update.
-	 *
 	 * argument delay number - Milliseconds before next update. If empty, this.config.updateInterval is used.
 	 */
 	scheduleUpdate: function(delay) {
