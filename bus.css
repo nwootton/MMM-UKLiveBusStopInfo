@@ -1,12 +1,19 @@
-.transport {
+.bus {
   font-size: 75%;
   display: inline-block;
-  -moz-transform: translate(0, -3px); /* IE 9 */
+  -o-transform: translate(0, -3px);
+  -moz-transform: translate(0, -3px);
   -ms-transform: translate(0, -3px); /* IE 9 */
   -webkit-transform: translate(0, -3px); /* Safari */
   transform: translate(0, -3px);
 }
 
-.transport table {
+
+
+.bus table {
     width: 400px;
+}
+
+.bus dest {
+  font-weight: bold;
 }
