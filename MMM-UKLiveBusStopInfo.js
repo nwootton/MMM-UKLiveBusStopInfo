@@ -86,6 +86,11 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			return wrapper;
 		}
 
+		var title = document.createElement("div");
+
+		title.innerHTML = this.busStopName;
+		wrapper.appendChild(title);
+
 		var bustable = document.createElement("table");
 		bustable.className = "small";
 
@@ -127,8 +132,10 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			}
 
 		}
+		wrapper.appendChild(bustable);
 
-		return bustable;
+		return wrapper;
+
 	},
 
 	/* updateTimetable()
@@ -198,7 +205,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 	 */
 	processBuses: function(data) {
     //Log.info("In processBuses");
-    this.busStopName = data.stop_name;
+    this.busStopName = data.stop_name + " ("+ data.bearing +")";
 
     this.buses = [];
     var counter = data.departures.all.length;
