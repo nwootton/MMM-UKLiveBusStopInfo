@@ -14,10 +14,12 @@ modules: [
 		module: 'MMM-UKLiveBusStopInfo',
 		position: 'bottom_left',
 		config: {
-			atcocode: 	'490015165B', 				// ATCO code for specific bus stop
-			app_id: 	'', 				// TransportAPI App ID
-			app_key: 	'', 	// TransportAPI App Key
-			limit: 		5  					//Optional - Maximum results to display.
+			atcocode: 	'490015165B', 		// ATCO code for specific bus stop
+			app_id: 	'', 				        // TransportAPI App ID
+			app_key: 	'', 	              // TransportAPI App Key
+			limit: 		5  					        // Optional - Maximum results to display.
+      showRealTime: false,          // Optional - show realtime departure info
+      showDelay: false              // Optional - show delay in minutes based on Real Time info vs Time table
 		}
 	},
 ]
@@ -36,6 +38,8 @@ The following is taken from the TransportAPI documentation [here](https://develo
 
 |Option|Optional Settings Description|
 |---|---|
+|`showRealTime`| Boolean. Show realtime departure info. <br><br>**Default:** false|
+|`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. <br><br>**Default:** false|
 |`limit`|Integer. Number of departures to return.<br><br>**Default:** 10|
 |`nextBuses`|String. Set this to 'no' if you want to disable expensive calls to NextBuses.<br><br>**Default:** 'Yes'|
 

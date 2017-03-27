@@ -28,9 +28,8 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		limit: 			'', 	//Maximum number of results to display
 		nextBuses: 	'', 		//Use NextBuses API calls
 
-		titleReplace: {
-			"Zeittabelle ": ""
-		},
+		showRealTime: false,
+		showDelay: false
 	},
 
 	// Define required scripts.
@@ -100,24 +99,58 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			var row = document.createElement("tr");
 			bustable.appendChild(row);
 
-      //Departure Time
-			var departureTimeCell = document.createElement("td");
-			departureTimeCell.innerHTML = bus.departure;
-			departureTimeCell.className = "align-right bright";
-			row.appendChild(departureTimeCell);
-
 			//Route name/Number
 			var routeCell = document.createElement("td");
-			routeCell.className = "align-centre";
+			routeCell.className = "route";
 			routeCell.innerHTML = " " + bus.routeName + " ";
 			row.appendChild(routeCell);
 
 			//Direction Info
 			var directionCell = document.createElement("td");
-			directionCell.className = "align-right dest";
+			directionCell.className = "dest";
 			directionCell.innerHTML = bus.direction;
 			row.appendChild(directionCell);
 
+      //Time Tabled Departure
+			var timeTabledCell = document.createElement("td");
+			timeTabledCell.innerHTML = bus.timetableDeparture;
+			timeTabledCell.className = "timeTabled";
+			row.appendChild(timeTabledCell);
+
+			if (this.config.showRealTime) {
+      	//Real Time Feedback for Departure
+				var realTimeCell = document.createElement("td");
+				realTimeCell.innerHTML = bus.expectedDeparture;
+				realTimeCell.className = "expTime";
+				row.appendChild(realTimeCell);
+			}
+
+			if (this.config.showDelay) {
+	      //Delay Departure
+				var delayCell = document.createElement("td");
+
+				if(bus.delay > 1 || bus.delay < -1) {
+					label = " mins ";
+				}
+				else {
+					label = " min ";
+				}
+
+				if(bus.delay < 0 ) {
+	          delayCell.innerHTML = " (" + Math.abs(bus.delay) + label + "late)";
+						delayCell.className = "late";
+	      }
+				else if(bus.delay > 0 ) {
+	          delayCell.innerHTML = " (" + Math.abs(bus.delay) + label + "early)";
+						delayCell.className = "early";
+				}
+				else {
+	          delayCell.innerHTML = " On Time ";
+						delayCell.className = "nonews";
+				}
+
+				row.appendChild(delayCell);
+			}
 
 			if (this.config.fade && this.config.fadePoint < 1) {
 				if (this.config.fadePoint < 0) {
@@ -213,12 +246,26 @@ Module.register("MMM-UKLiveBusStopInfo",{
     for (var i = 0; i < counter; i++) {
 
       var bus = data.departures.all[i];
+
+			var arrRTDate = bus.expected_departure_date.split('-');
+			var arrRTTime = bus.expected_departure_time.split(':');
+
+			var arrTTDate = bus.expected_departure_date.split('-');
+			var arrTTTime = bus.aimed_departure_time.split(':');
+
+			var RTDate = new Date( arrRTDate[0], arrRTDate[1], arrRTDate[2], arrRTTime[0], arrRTTime[1]);
+			var TTDate = new Date( arrTTDate[0], arrTTDate[1], arrTTDate[2], arrTTTime[0], arrTTTime[1]);
+
+			var delay = (((TTDate - RTDate) / 1000) / 60);
+
       //Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
       this.buses.push({
 
         routeName: bus.line_name,
         direction: bus.direction,
-        departure: bus.expected_departure_time
+        timetableDeparture: bus.aimed_departure_time,
+				expectedDeparture: bus.expected_departure_time,
+				delay: delay
       });
     }
 

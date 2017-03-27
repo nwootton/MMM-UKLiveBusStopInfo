@@ -11,9 +11,25 @@
 
 
 .bus table {
-    width: 400px;
+    width: 450px;
 }
 
-.bus dest {
+.dest {
+
+}
+
+.route {
   font-weight: bold;
+}
+
+.late {
+  color: #ff0000;
+}
+
+.early {
+  color: #55a6e0;
+}
+
+.nonews {
+  color: #ffffff
 }
