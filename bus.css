@@ -15,11 +15,12 @@
 }
 
 .dest {
-
+  text-align: left;
 }
 
 .route {
   font-weight: bold;
+  text-align: left;
 }
 
 .late {
