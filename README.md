@@ -48,3 +48,13 @@ To find the ATCOCode of a bus stop look at the OpenStreetMap.org transport layer
 ## Transport API
 
 To setup an account for the App_id & app_key sign up for an account here: http://www.transportapi.com/
+
+## Troubleshooting
+
+If there are issue getting data out of the module I'm ALWAYS going to ask the following:
+
+1. Do you have an account set up at Transportapi.com?
+2. Do you have an app_id and app_key set up?
+3. Do you know the ATCOCode for the bus stop??
+4. If you use the live api documentation [here](https://developer.transportapi.com/docs?raml=https://transportapi.com/v3/raml/transportapi.raml##uk_bus_stop_atcocode_live_json) and put in the info you want to use does it respond without an error?
+5. Is the info in your config the same as that you’ve used successfully in the live api docs?
