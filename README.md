@@ -15,14 +15,16 @@ modules: [
 		position: 'bottom_left',
 		config: {
 			atcocode: 	'490015165B', 				// ATCO code for specific bus stop
-			app_id: 	'03bf8009', 				// TransportAPI App ID
-			app_key: 	'd9307fd91b0247c607e098d5effedc97', 	// TransportAPI App Key
+			app_id: 	'', 				// TransportAPI App ID
+			app_key: 	'', 	// TransportAPI App Key
 			limit: 		5  					//Optional - Maximum results to display.
 		}
 	},
 ]
 ```
 There are 3 MANDATORY fields - `atcocode`, `app_id` and `app_key`. All the others are used to limit the amount of info you get back, especially useful for busy bus stops that serve multiple routes.
+
+**PLEASE NOTE** The TransportAPI provides a sample key in their documentation that I previously referenced here. This is being removed very soon, so you *MUST* register to get this module to work!
 
 The following is taken from the TransportAPI documentation [here](https://developer.transportapi.com/docs?raml=https://transportapi.com/v3/raml/transportapi.raml##request_uk_bus_stop_atcocode_live_json)
 
