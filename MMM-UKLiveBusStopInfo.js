@@ -245,18 +245,27 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
     for (var i = 0; i < counter; i++) {
 
-      var bus = data.departures.all[i];
+			var bus = data.departures.all[i];
+			var delay = null;
 
-			var arrRTDate = bus.expected_departure_date.split('-');
-			var arrRTTime = bus.expected_departure_time.split(':');
+			//Sometimes the aimed_departure_time is NULL, so use the expected_departure_time instead
+			if(bus.aimed_departure_time == null) {
+				bus.aimed_departure_time = bus.expected_departure_time;
+			};
 
-			var arrTTDate = bus.expected_departure_date.split('-');
-			var arrTTTime = bus.aimed_departure_time.split(':');
+			//Only do these calc if showDelay is set in the config
+			if (this.config.showDelay) {
+				var arrRTDate = bus.expected_departure_date.split('-');
+				var arrRTTime = bus.expected_departure_time.split(':');
 
-			var RTDate = new Date( arrRTDate[0], arrRTDate[1], arrRTDate[2], arrRTTime[0], arrRTTime[1]);
-			var TTDate = new Date( arrTTDate[0], arrTTDate[1], arrTTDate[2], arrTTTime[0], arrTTTime[1]);
+				var arrTTDate = bus.expected_departure_date.split('-');
+				var arrTTTime = bus.aimed_departure_time.split(':');
 
-			var delay = (((TTDate - RTDate) / 1000) / 60);
+				var RTDate = new Date( arrRTDate[0], arrRTDate[1], arrRTDate[2], arrRTTime[0], arrRTTime[1]);
+				var TTDate = new Date( arrTTDate[0], arrTTDate[1], arrTTDate[2], arrTTTime[0], arrTTTime[1]);
+
+				delay = (((TTDate - RTDate) / 1000) / 60);
+			}
 
       //Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
       this.buses.push({
