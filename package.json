@@ -1,0 +1,27 @@
+{
+  "name": "mmm-uklivebusstoping",
+  "version": "0.0.2",
+  "description": "Realtime info for UK bus stops",
+  "main": "MMM-UKLiveBusStopInfo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nwootton/MMM-UKLiveBusStopInfo.git"
+  },
+  "keywords": [
+    "Magic",
+    "Mirror",
+    "Module"
+  ],
+  "author": "NJW",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nwootton/MMM-UKLiveBusStopInfo/issues"
+  },
+  "homepage": "https://github.com/nwootton/MMM-UKLiveBusStopInfo#readme",
+  "dependencies": {
+    "request": "^2.81.0"
+  }
+}

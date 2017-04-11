@@ -6,6 +6,14 @@ Magic Mirror Module for UK bus information. Returns real-time info about a SPECI
 
 ## Using the module
 
+Git clone from this repository into the modules sub-directory of the Magic Mirror installation, change directory into the newly cloned code and then run npm install.
+
+```bash
+git clone https://github.com/nwootton/MMM-UKLiveBusStopInfo.git
+cd MMM-UKLiveBusStopInfo
+npm install
+```
+
 To use this module, add it to the modules array in the `config/config.js` file:
 
 ```javascript
@@ -38,6 +46,7 @@ The following is taken from the TransportAPI documentation [here](https://develo
 
 |Option|Optional Settings Description|
 |---|---|
+|`updateInterval`| Time between updates in ms. <br/><br/>**Default:** 300000 (5 minutes)|
 |`showRealTime`| Boolean. Show realtime departure info. <br><br>**Default:** false|
 |`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. <br><br>**Default:** false|
 |`limit`|Integer. Number of departures to return.<br><br>**Default:** 10|

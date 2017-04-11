@@ -55,6 +55,15 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		this.updateTimer = null;
 
+		this.url = encodeURI(this.config.apiBase + this.config.atcocode + '/live.json' + this.getParams());
+
+		this.updateBusInfo(this);
+	},
+
+	// updateBusInfo
+	updateBusInfo: function(self) {
+		//Log.info(self);
+		self.sendSocketNotification('GET_BUSINFO', {'url':this.url});
 	},
 
 	// Override dom generator.
@@ -171,69 +180,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 	},
 
-	/* updateTimetable()
-	 * Requests new data from TransportAPI.com
-	 * Calls processBuses on succesfull response.
-	 */
-	updateTimetable: function() {
-		var url = this.config.apiBase + this.config.atcocode + '/live.json' + this.getParams();
-		Log.info(url);
-
-		var self = this;
-		var retry = true;
-
-		var busInfoRequest = new XMLHttpRequest();
-
-		busInfoRequest.open("GET", url, true);
-
-    busInfoRequest.onreadystatechange = function() {
-			if (this.readyState === 4) {
-				if (this.status === 200) {
-          self.processBuses(JSON.parse(this.response));
-				}
-        else if (this.status === 401) {
-					self.config.id = "";
-					self.updateDom(this.config.animationSpeed);
-
-					Log.error(self.name + ": Error 401");
-					retry = false;
-				}
-        else {
-					Log.error(self.name + ": Could not load buses.");
-				}
-
-				if (retry) {
-					self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
-				}
-			}
-		};
-		busInfoRequest.send();
-	},
-
-	/* getParams()
-	 * Generates an url with api parameters based on the config.
-	 * return String - URL params.
-	 */
-	getParams: function() {
-		var params = "?";
-		params += "app_id=" + this.config.app_id;
-		params += "&app_key=" + this.config.app_key;
-
-		if(this.config.limit.length > 0) {
-			params += "&limit=" + this.config.limit;
-		}
-
-		if(this.config.nextBuses.length > 0) {
-			params += "&nextBuses=" + this.config.nextBuses;
-		}
-
-		params += "&group=" + this.config.group;
-
-		Log.info(params);
-		return params;
-	},
-
-	/* processBuses(data)
+/* processBuses(data)
 	 * Uses the received data to set the various values into a new array.
 	 */
 	processBuses: function(data) {
@@ -243,15 +190,19 @@ Module.register("MMM-UKLiveBusStopInfo",{
     this.buses = [];
     var counter = data.departures.all.length;
 
+		if (counter > this.config.limit) {
+			counter = this.config.limit;
+		}
+
     for (var i = 0; i < counter; i++) {
 
 			var bus = data.departures.all[i];
 			var delay = null;
 
 			//Sometimes the aimed_departure_time is NULL, so use the expected_departure_time instead
-			if(bus.aimed_departure_time == null) {
+			if(bus.aimed_departure_time === null) {
 				bus.aimed_departure_time = bus.expected_departure_time;
-			};
+			}
 
 			//Only do these calc if showDelay is set in the config
 			if (this.config.showDelay) {
@@ -283,6 +234,29 @@ Module.register("MMM-UKLiveBusStopInfo",{
     this.updateDom(this.config.animationSpeed);
   },
 
+	/* getParams()
+	 * Generates an url with api parameters based on the config.
+	 * return String - URL params.
+	 */
+	getParams: function() {
+		var params = "?";
+		params += "app_id=" + this.config.app_id;
+		params += "&app_key=" + this.config.app_key;
+
+		if(this.config.limit.length > 0) {
+			params += "&limit=" + this.config.limit;
+		}
+
+		if(this.config.nextBuses.length > 0) {
+			params += "&nextBuses=" + this.config.nextBuses;
+		}
+
+		params += "&group=" + this.config.group;
+
+		//Log.info(params);
+		return params;
+	},
+
 	/* scheduleUpdate()
 	 * Schedule next update.
 	 * argument delay number - Milliseconds before next update. If empty, this.config.updateInterval is used.
@@ -296,8 +270,18 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		var self = this;
 		clearTimeout(this.updateTimer);
 		this.updateTimer = setTimeout(function() {
-			self.updateTimetable();
+			self.updateBusInfo(self);
 		}, nextLoad);
 	},
+
+
+	// Process data returned
+	socketNotificationReceived: function(notification, payload) {
+
+    if (notification === 'BUS_DATA' && payload.url === this.url) {
+        this.processBuses(payload.data);
+				this.scheduleUpdate(this.config.updateInterval);
+    }
+  }
 
 });
