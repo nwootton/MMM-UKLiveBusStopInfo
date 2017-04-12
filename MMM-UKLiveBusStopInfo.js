@@ -26,7 +26,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		group:			'no', //Stops buses being grouped by route
 
 		limit: 			'', 	//Maximum number of results to display
-		nextBuses: 	'', 		//Use NextBuses API calls
+		nextBuses: 	'no', 		//Use NextBuses API calls
 
 		showRealTime: false,
 		showDelay: false

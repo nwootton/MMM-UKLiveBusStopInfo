@@ -50,9 +50,12 @@ The following is taken from the TransportAPI documentation [here](https://develo
 |`showRealTime`| Boolean. Show realtime departure info. <br><br>**Default:** false|
 |`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. <br><br>**Default:** false|
 |`limit`|Integer. Number of departures to return.<br><br>**Default:** 10|
-|`nextBuses`|String. Set this to 'no' if you want to disable expensive calls to NextBuses. By EXPENSIVE the cost of a call to the API without nextBuses is 1. With nextBuses it is 10. The limit is 1000 hits per day for a free account.<br><br>**Default:** 'Yes'|
+|`nextBuses`|String. Set this to 'no' if you want to disable expensive calls to NextBuses. See notes below.<br><br>**Default:** 'No'|
 
+## Notes ##
 To find the ATCOCode of a bus stop look at the OpenStreetMap.org transport layer and query the bus stop you are interested in.
+
+By EXPENSIVE the cost of a call to the API without nextBuses is 1. With nextBuses it is 10. The limit is 1000 hits per day for a free account. So with a refresh rate of 5 minutes (default) and nextBuses on, you will make 288 calls per module per day (1440 minutes/day divided by 5 = 288). At 10 API points per request, that's 2880 points, almost 2000 more points a day than the free TransportAPI access allows.
 
 ## Transport API
 
