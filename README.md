@@ -50,7 +50,7 @@ The following is taken from the TransportAPI documentation [here](https://develo
 |`showRealTime`| Boolean. Show realtime departure info. <br><br>**Default:** false|
 |`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. <br><br>**Default:** false|
 |`limit`|Integer. Number of departures to return.<br><br>**Default:** 10|
-|`nextBuses`|String. Set this to 'no' if you want to disable expensive calls to NextBuses. See notes below.<br><br>**Default:** 'No'|
+|`nextBuses`|String. Set this to 'Yes' if you want to enable expensive calls to NextBuses. See notes below.<br><br>**Default:** 'No'|
 
 ## Notes ##
 To find the ATCOCode of a bus stop look at the OpenStreetMap.org transport layer and query the bus stop you are interested in.
