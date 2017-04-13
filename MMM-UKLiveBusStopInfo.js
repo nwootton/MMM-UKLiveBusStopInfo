@@ -29,7 +29,8 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		nextBuses: 	'no', 		//Use NextBuses API calls
 
 		showRealTime: false,
-		showDelay: false
+		showDelay: false,
+		header:	'Departures'
 	},
 
 	// Define required scripts.
@@ -40,6 +41,11 @@ Module.register("MMM-UKLiveBusStopInfo",{
 	// Define required scripts.
 	getScripts: function() {
 		return ["moment.js"];
+	},
+
+	//Define header for module.
+	getHeader: function() {
+		return this.config.header;
 	},
 
 	// Define start sequence.
@@ -95,9 +101,6 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		}
 
 		var title = document.createElement("div");
-
-		title.innerHTML = this.busStopName;
-		wrapper.appendChild(title);
 
 		var bustable = document.createElement("table");
 		bustable.className = "small";
@@ -185,7 +188,8 @@ Module.register("MMM-UKLiveBusStopInfo",{
 	 */
 	processBuses: function(data) {
     //Log.info("In processBuses");
-    this.busStopName = data.stop_name + " ("+ data.bearing +")";
+    //this.busStopName = data.stop_name + " ("+ data.bearing +")";
+		this.config.header = data.stop_name + " ("+ data.bearing +")";
 
     this.buses = [];
     var counter = data.departures.all.length;
