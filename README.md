@@ -25,7 +25,7 @@ modules: [
 			atcocode: 	'490015165B', 		// ATCO code for specific bus stop
 			app_id: 	'', 				        // TransportAPI App ID
 			app_key: 	'', 	              // TransportAPI App Key
-			limit: 		5  					        // Optional - Maximum results to display.
+			limit: 		5,  					        // Optional - Maximum results to display.
       showRealTime: false,          // Optional - show realtime departure info
       showDelay: false              // Optional - show delay in minutes based on Real Time info vs Time table
 		}
