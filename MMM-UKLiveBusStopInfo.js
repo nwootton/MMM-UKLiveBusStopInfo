@@ -55,7 +55,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		// Set locale.
 		moment.locale(config.language);
 
-    this.buses = [];
+    this.buses = {};
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
 
@@ -102,11 +102,16 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		var title = document.createElement("div");
 
+		title.innerHTML = this.buses.stopName;
+		title.className = "small busStopName";
+		wrapper.appendChild(title);
+
+
 		var bustable = document.createElement("table");
 		bustable.className = "small";
 
-		for (var t in this.buses) {
-			var bus = this.buses[t];
+		for (var t in this.buses.data) {
+			var bus = this.buses.data[t];
 
 			var row = document.createElement("tr");
 			bustable.appendChild(row);
@@ -188,11 +193,21 @@ Module.register("MMM-UKLiveBusStopInfo",{
 	 */
 	processBuses: function(data) {
     //Log.info("In processBuses");
-    //this.busStopName = data.stop_name + " ("+ data.bearing +")";
-		this.config.header = data.stop_name + " ("+ data.bearing +")";
+    //this.config.header = data.stop_name + " ("+ data.bearing +")";
 
-    this.buses = [];
-    var counter = data.departures.all.length;
+		this.buses = {};
+    this.buses.data = [];
+
+		var stopName = data.stop_name + " ("+ data.bearing +")";
+
+		if(stopName.length > 4) {
+			this.buses.stopName = stopName;
+		}
+		else {
+			this.buses.stopName = "Departures";
+		}
+
+		var counter = data.departures.all.length;
 
 		if (counter > this.config.limit) {
 			counter = this.config.limit;
@@ -223,7 +238,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			}
 
       //Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
-      this.buses.push({
+      this.buses.data.push({
 
         routeName: bus.line_name,
         direction: bus.direction,
