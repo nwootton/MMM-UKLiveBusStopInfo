@@ -137,7 +137,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			if (this.config.showRealTime) {
       	//Real Time Feedback for Departure
 				var realTimeCell = document.createElement("td");
-				realTimeCell.innerHTML = bus.expectedDeparture;
+				realTimeCell.innerHTML = "(" + bus.expectedDeparture + ")";
 				realTimeCell.className = "expTime";
 				row.appendChild(realTimeCell);
 			}
@@ -154,11 +154,11 @@ Module.register("MMM-UKLiveBusStopInfo",{
 				}
 
 				if(bus.delay < 0 ) {
-	          delayCell.innerHTML = " (" + Math.abs(bus.delay) + label + "late)";
+	          delayCell.innerHTML = Math.abs(bus.delay) + label + "late";
 						delayCell.className = "late";
 	      }
 				else if(bus.delay > 0 ) {
-	          delayCell.innerHTML = " (" + Math.abs(bus.delay) + label + "early)";
+	          delayCell.innerHTML = Math.abs(bus.delay) + label + "early";
 						delayCell.className = "early";
 				}
 				else {
@@ -226,9 +226,20 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			var delay = null;
 
 			//Sometimes the aimed_departure_time is NULL, so use the expected_departure_time instead
-			if(bus.aimed_departure_time === null) {
+			if((bus.aimed_departure_time === null) && (bus.expected_departure_time !== null)) {
 				bus.aimed_departure_time = bus.expected_departure_time;
 			}
+
+			//Sometimes the expected_departure_time is NULL, so use the aimed_departure_time instead
+			if((bus.aimed_departure_time !== null) && (bus.expected_departure_time === null)) {
+				bus.expected_departure_time = bus.aimed_departure_time;
+			}
+
+			//Sometime the departure date is empty, so assume todays date!
+			if(bus.expected_departure_date === null) {
+				bus.expected_departure_date = bus.date;
+			}
+
 
 			//Only do these calc if showDelay is set in the config
 			if (this.config.showDelay) {
