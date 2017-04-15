@@ -188,31 +188,38 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 	},
 
-/* processBuses(data)
-	 * Uses the received data to set the various values into a new array.
-	 */
+	/* processBuses(data)
+	* Uses the received data to set the various values into a new array.
+	*/
 	processBuses: function(data) {
-    //Log.info("In processBuses");
-    //this.config.header = data.stop_name + " ("+ data.bearing +")";
-
+		//Define object to hold bus data
 		this.buses = {};
+		//Define array of departure info
     this.buses.data = [];
 
-		var stopName = data.stop_name + " ("+ data.bearing +")";
+		//Define empty stop name
+		var stopName = "";
 
-		if(stopName.length > 4) {
+		//Populate with stop name returned by TransportAPI info
+		stopName = data.stop_name + " ("+ data.bearing +")";
+
+		//If the name returned is more than 3, use it, else fallback to departures
+		if(stopName.length > 3) {
 			this.buses.stopName = stopName;
 		}
 		else {
 			this.buses.stopName = "Departures";
 		}
 
+		//Figure out how long the reulsts are
 		var counter = data.departures.all.length;
 
+		//See if there are more results than requested and limit if necessary
 		if (counter > this.config.limit) {
 			counter = this.config.limit;
 		}
 
+		//Loop over the results up to the max - either counter of returned
     for (var i = 0; i < counter; i++) {
 
 			var bus = data.departures.all[i];
@@ -239,7 +246,6 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
       //Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
       this.buses.data.push({
-
         routeName: bus.line_name,
         direction: bus.direction,
         timetableDeparture: bus.aimed_departure_time,
