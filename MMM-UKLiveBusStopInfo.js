@@ -29,8 +29,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		nextBuses: 	'no', 		//Use NextBuses API calls
 
 		showRealTime: false,
-		showDelay: false,
-		header:	'Departures'
+		showDelay: false
 	},
 
 	// Define required scripts.
@@ -43,11 +42,6 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		return ["moment.js"];
 	},
 
-	//Define header for module.
-	getHeader: function() {
-		return this.config.header;
-	},
-
 	// Define start sequence.
 	start: function() {
 		Log.info("Starting module: " + this.name);
@@ -55,7 +49,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		// Set locale.
 		moment.locale(config.language);
 
-    this.buses = {};
+    this.buses = [];
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
 
@@ -102,16 +96,14 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		var title = document.createElement("div");
 
-		title.innerHTML = this.buses.stopName;
-		title.className = "small busStopName";
+		title.innerHTML = this.busStopName;
 		wrapper.appendChild(title);
-
 
 		var bustable = document.createElement("table");
 		bustable.className = "small";
 
-		for (var t in this.buses.data) {
-			var bus = this.buses.data[t];
+		for (var t in this.buses) {
+			var bus = this.buses[t];
 
 			var row = document.createElement("tr");
 			bustable.appendChild(row);
@@ -193,21 +185,10 @@ Module.register("MMM-UKLiveBusStopInfo",{
 	 */
 	processBuses: function(data) {
     //Log.info("In processBuses");
-    //this.config.header = data.stop_name + " ("+ data.bearing +")";
+    this.busStopName = data.stop_name + " ("+ data.bearing +")";
 
-		this.buses = {};
-    this.buses.data = [];
-
-		var stopName = data.stop_name + " ("+ data.bearing +")";
-
-		if(stopName.length > 4) {
-			this.buses.stopName = stopName;
-		}
-		else {
-			this.buses.stopName = "Departures";
-		}
-
-		var counter = data.departures.all.length;
+    this.buses = [];
+    var counter = data.departures.all.length;
 
 		if (counter > this.config.limit) {
 			counter = this.config.limit;
@@ -238,7 +219,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			}
 
       //Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
-      this.buses.data.push({
+      this.buses.push({
 
         routeName: bus.line_name,
         direction: bus.direction,
