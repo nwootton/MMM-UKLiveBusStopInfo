@@ -2,7 +2,9 @@
 Additional Module for MagicMirror²  https://github.com/MichMich/MagicMirror
 
 # Module: UKLiveBusStopInfo
-Magic Mirror Module for UK bus information. Returns real-time info about a SPECIFIC bus stop.
+Magic Mirror Module for UK bus information. Returns real-time info about a SPECIFIC bus stop(s).
+
+![](./images/Current_version.png)
 
 ## Using the module
 
