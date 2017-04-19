@@ -22,16 +22,16 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		atcocode:		'', 	// atcocode for bus stop
 		app_key: 		'', 	// TransportAPI App Key
-    app_id: 		'', 	// TransportAPI App ID
+    	app_id: 		'', 	// TransportAPI App ID
 		group:			'no', //Stops buses being grouped by route
 
 		limit: 			'', 	//Maximum number of results to display
-		nextBuses: 	'no', 		//Use NextBuses API calls
+		nextBuses: 		'no', 		//Use NextBuses API calls
 
-		showRealTime: false,
-		showDelay: false,
+		showRealTime: 	false,
+		showDelay: 		false,
 		useBusStopName: false,
-		header:	'Departures'
+		header:			'Departures'
 	},
 
 	// Define required scripts.
