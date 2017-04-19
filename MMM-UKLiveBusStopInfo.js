@@ -248,7 +248,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		}
 
 		if(this.config.nextBuses.length > 0) {
-			params += "&nextBuses=" + this.config.nextBuses;
+			params += "&nextbuses=" + this.config.nextBuses.toLowerCase();
 		}
 
 		params += "&group=" + this.config.group;
