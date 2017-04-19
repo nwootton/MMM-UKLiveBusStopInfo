@@ -16,9 +16,9 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		animationSpeed: 2000,
 		fade: true,
 		fadePoint: 0.25, // Start on 1/4th of the list.
-    initialLoadDelay: 0, // start delay seconds.
+   		initialLoadDelay: 0, // start delay seconds.
 
-    apiBase: 'https://transportapi.com/v3/uk/bus/stop/',
+    	apiBase: 'https://transportapi.com/v3/uk/bus/stop/',
 
 		atcocode:		'', 	// atcocode for bus stop
 		app_key: 		'', 	// TransportAPI App Key
