@@ -16,22 +16,23 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		animationSpeed: 2000,
 		fade: true,
 		fadePoint: 0.25, // Start on 1/4th of the list.
-   		initialLoadDelay: 0, // start delay seconds.
+   	initialLoadDelay: 0, // start delay seconds.
 
-    	apiBase: 'https://transportapi.com/v3/uk/bus/stop/',
+    apiBase: 'https://transportapi.com/v3/uk/bus/stop/',
 
 		atcocode:		'', 	// atcocode for bus stop
 		app_key: 		'', 	// TransportAPI App Key
-    	app_id: 		'', 	// TransportAPI App ID
+    app_id: 		'', 	// TransportAPI App ID
 		group:			'no', //Stops buses being grouped by route
 
 		limit: 			'', 	//Maximum number of results to display
-		nextBuses: 		'no', 		//Use NextBuses API calls
 
-		showRealTime: 	false,
-		showDelay: 		false,
+		nextBuses: 			'no', 		//Use NextBuses API calls
+		showRealTime: 	false,		//expanded info when used with NextBuses
+		showDelay: 			false,		//expanded info when used with NextBuses
+
 		useBusStopName: false,
-		header:			'Departures'
+		header:					'Departures'
 	},
 
 	// Define required scripts.
@@ -69,8 +70,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 	// updateBusInfo
 	updateBusInfo: function(self) {
-		//Log.info(self);
-		self.sendSocketNotification('GET_BUSINFO', {'url':this.url});
+		self.sendSocketNotification('GET_BUSINFO', {'url':self.url});
 	},
 
 	// Override dom generator.
@@ -229,27 +229,54 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			var bus = data.departures.all[i];
 			var delay = null;
 
-			if((bus.aimed_departure_time === null) && (bus.expected_departure_time !== null)) {
-				//Sometimes the aimed_departure_time is NULL, so use the expected_departure_time instead
-				bus.aimed_departure_time = bus.expected_departure_time;
-			}
-			else if((bus.aimed_departure_time !== null) && (bus.expected_departure_time === null)) {
-				//Sometimes the expected_departure_time is NULL, so use the aimed_departure_time instead
-				bus.expected_departure_time = bus.aimed_departure_time;
-			}
+			var thisDate;
+			var thisTimetableTime;
+			var thisLiveTime;
 
-			//Sometime the departure date is empty, so assume todays date!
-			if(bus.expected_departure_date === null) {
-				bus.expected_departure_date = bus.date;
+			if(this.config.nextBuses.toLowerCase() === "yes") {
+				//NextBuses Is On, so we need to use best & expected values
+				//Date
+				thisDate = bus.expected_departure_date;
+				//timetabled time
+				thisTimetableTime = bus.best_departure_estimate;
+				//live time
+				thisLiveTime = bus.expected_departure_time;
+
 			}
+			else {
+				//NextBuses Is Off, so we need to use aimed & expected values
+				//Date
+				thisDate = bus.date;
+				//timetabled time
+				if (bus.aimed_departure_time !== null) {
+					thisTimetableTime = bus.aimed_departure_time;
+				}
+				else {
+					thisTimetableTime = bus.expected_departure_time;
+				}
+				//live time
+				thisLiveTime = bus.best_departure_estimate;
+			}
+		/*
+			if(this.config.atcocode === '490008830N'){
+				Log.warn('===================================');
+				Log.warn(this.config.nextBuses.toLowerCase());
+				Log.warn(bus);
+				Log.warn(thisDate);
+				Log.warn(thisTimetableTime);
+				Log.warn(thisLiveTime);
+				Log.warn('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+			}
+		*/
+
 
 			//Only do these calc if showDelay is set in the config
 			if (this.config.showDelay) {
-				var arrRTDate = bus.expected_departure_date.split('-');
-				var arrRTTime = bus.expected_departure_time.split(':');
+				var arrRTDate = thisDate.split('-');
+				var arrRTTime = thisLiveTime.split(':');
 
-				var arrTTDate = bus.date.split('-');
-				var arrTTTime = bus.aimed_departure_time.split(':');
+				var arrTTDate = thisDate.split('-');
+				var arrTTTime = thisTimetableTime.split(':');
 
 				var RTDate = new Date( arrRTDate[0], arrRTDate[1], arrRTDate[2], arrRTTime[0], arrRTTime[1]);
 				var TTDate = new Date( arrTTDate[0], arrTTDate[1], arrTTDate[2], arrTTTime[0], arrTTTime[1]);
@@ -261,9 +288,9 @@ Module.register("MMM-UKLiveBusStopInfo",{
       this.buses.data.push({
         routeName: bus.line_name,
         direction: bus.direction,
-        timetableDeparture: bus.aimed_departure_time,
-		expectedDeparture: bus.expected_departure_time,
-		delay: delay
+        timetableDeparture: thisTimetableTime,
+				expectedDeparture: thisLiveTime,
+				delay: delay
       });
     }
 
@@ -280,16 +307,9 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		var params = "?";
 		params += "app_id=" + this.config.app_id;
 		params += "&app_key=" + this.config.app_key;
-
-		if(this.config.limit.length > 0) {
-			params += "&limit=" + this.config.limit;
-		}
-
-		if(this.config.nextBuses.length > 0) {
-			params += "&nextBuses=" + this.config.nextBuses;
-		}
-
+		params += "&limit=" + this.config.limit;
 		params += "&group=" + this.config.group;
+		params += "&nextbuses=" + this.config.nextBuses.toLowerCase();
 
 		//Log.info(params);
 		return params;
