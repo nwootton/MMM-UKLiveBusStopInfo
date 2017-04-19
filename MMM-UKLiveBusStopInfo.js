@@ -132,14 +132,14 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			directionCell.innerHTML = bus.direction;
 			row.appendChild(directionCell);
 
-      //Time Tabled Departure
+      		//Time Tabled Departure
 			var timeTabledCell = document.createElement("td");
 			timeTabledCell.innerHTML = bus.timetableDeparture;
 			timeTabledCell.className = "timeTabled";
 			row.appendChild(timeTabledCell);
 
 			if (this.config.showRealTime) {
-      	//Real Time Feedback for Departure
+      			//Real Time Feedback for Departure
 				var realTimeCell = document.createElement("td");
 				realTimeCell.innerHTML = "(" + bus.expectedDeparture + ")";
 				realTimeCell.className = "expTime";
@@ -147,7 +147,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			}
 
 			if (this.config.showDelay) {
-	      //Delay Departure
+	      		//Delay Departure
 				var delayCell = document.createElement("td");
 
 				if(bus.delay > 1 || bus.delay < -1) {
@@ -158,16 +158,16 @@ Module.register("MMM-UKLiveBusStopInfo",{
 				}
 
 				if(bus.delay < 0 ) {
-	          delayCell.innerHTML = Math.abs(bus.delay) + label + "late";
-						delayCell.className = "late";
-	      }
+	          		delayCell.innerHTML = Math.abs(bus.delay) + label + "late";
+					delayCell.className = "late";
+	      		}
 				else if(bus.delay > 0 ) {
-	          delayCell.innerHTML = Math.abs(bus.delay) + label + "early";
-						delayCell.className = "early";
+	          		delayCell.innerHTML = Math.abs(bus.delay) + label + "early";
+					delayCell.className = "early";
 				}
 				else {
-	          delayCell.innerHTML = " On Time ";
-						delayCell.className = "nonews";
+	          		delayCell.innerHTML = " On Time ";
+					delayCell.className = "nonews";
 				}
 
 				row.appendChild(delayCell);
@@ -224,7 +224,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		}
 
 		//Loop over the results up to the max - either counter of returned
-    for (var i = 0; i < counter; i++) {
+    	for (var i = 0; i < counter; i++) {
 
 			var bus = data.departures.all[i];
 			var delay = null;
@@ -262,8 +262,8 @@ Module.register("MMM-UKLiveBusStopInfo",{
         routeName: bus.line_name,
         direction: bus.direction,
         timetableDeparture: bus.aimed_departure_time,
-				expectedDeparture: bus.expected_departure_time,
-				delay: delay
+		expectedDeparture: bus.expected_departure_time,
+		delay: delay
       });
     }
 
@@ -318,7 +318,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
     if (notification === 'BUS_DATA' && payload.url === this.url) {
         this.processBuses(payload.data);
-				this.scheduleUpdate(this.config.updateInterval);
+		this.scheduleUpdate(this.config.updateInterval);
     }
   }
 
