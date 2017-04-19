@@ -51,6 +51,7 @@ The following is taken from the TransportAPI documentation [here](https://develo
 |`updateInterval`| Time between updates in ms. <br/><br/>**Default:** 300000 (5 minutes)|
 |`showRealTime`| Boolean. Show realtime departure info. <br><br>**Default:** false|
 |`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. <br><br>**Default:** false|
+|`useBusStopName `|Boolean. This replaces the normal 'DEPARTURES' header text with the name of the bus stop. If left as false, the bus stop name will be shown under the header. <br><br>**Default:** false|
 |`limit`|Integer. Number of departures to return.<br><br>**Default:** 10|
 |`nextBuses`|String. Set this to 'Yes' if you want to enable expensive calls to NextBuses. See notes below.<br><br>**Default:** 'No'|
 

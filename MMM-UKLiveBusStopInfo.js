@@ -30,6 +30,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		showRealTime: false,
 		showDelay: false,
+		useBusStopName: false,
 		header:	'Departures'
 	},
 
@@ -100,12 +101,15 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			return wrapper;
 		}
 
-		var title = document.createElement("div");
-
-		title.innerHTML = this.buses.stopName;
-		title.className = "small busStopName";
-		wrapper.appendChild(title);
-
+		if (!this.config.useBusStopName) {
+			var title = document.createElement("div");
+			title.innerHTML = this.buses.stopName;
+			title.className = "small busStopName";
+			wrapper.appendChild(title);
+		}
+		else {
+			this.config.header = this.buses.stopName;
+		}
 
 		var bustable = document.createElement("table");
 		bustable.className = "small";
