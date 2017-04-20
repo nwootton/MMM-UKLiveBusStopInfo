@@ -44,11 +44,6 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		return ["moment.js"];
 	},
 
-	//Define header for module.
-	getHeader: function() {
-		return this.config.header;
-	},
-
 	// Define start sequence.
 	start: function() {
 		Log.info("Starting module: " + this.name);
@@ -56,7 +51,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		// Set locale.
 		moment.locale(config.language);
 
-    this.buses = {};
+    this.buses = [];
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
 
@@ -100,6 +95,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			return wrapper;
 		}
 
+
 		if (this.buses.stopName !== null) {
 			this.config.header = this.buses.stopName;
 		}
@@ -107,8 +103,8 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		var bustable = document.createElement("table");
 		bustable.className = "small";
 
-		for (var t in this.buses.data) {
-			var bus = this.buses.data[t];
+		for (var t in this.buses) {
+			var bus = this.buses[t];
 
 			var row = document.createElement("tr");
 			bustable.appendChild(row);
@@ -189,27 +185,11 @@ Module.register("MMM-UKLiveBusStopInfo",{
 	* Uses the received data to set the various values into a new array.
 	*/
 	processBuses: function(data) {
-		//Define object to hold bus data
-		this.buses = {};
-		//Define array of departure info
-    this.buses.data = [];
+    //Log.info("In processBuses");
+    this.busStopName = data.stop_name + " ("+ data.bearing +")";
 
-		//Define empty stop name
-		var stopName = "";
-
-		//Populate with stop name returned by TransportAPI info
-		stopName = data.stop_name + " ("+ data.bearing +")";
-
-		//If the name returned is more than 3, use it, else fallback to departures
-		if(stopName.length > 3) {
-			this.buses.stopName = stopName;
-		}
-		else {
-			this.buses.stopName = "Departures";
-		}
-
-		//Figure out how long the reulsts are
-		var counter = data.departures.all.length;
+    this.buses = [];
+    var counter = data.departures.all.length;
 
 		//See if there are more results than requested and limit if necessary
 		if (counter > this.config.limit) {
@@ -278,7 +258,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			}
 
       //Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
-      this.buses.data.push({
+      this.buses.push({
         routeName: bus.line_name,
         direction: bus.direction,
         timetableDeparture: thisTimetableTime,
