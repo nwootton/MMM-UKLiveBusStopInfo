@@ -31,7 +31,6 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		showRealTime: 	false,		//expanded info when used with NextBuses
 		showDelay: 			false,		//expanded info when used with NextBuses
 
-		useBusStopName: false,
 		header:					'Departures'
 	},
 
@@ -101,13 +100,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			return wrapper;
 		}
 
-		if (!this.config.useBusStopName) {
-			var title = document.createElement("div");
-			title.innerHTML = this.buses.stopName;
-			title.className = "small busStopName";
-			wrapper.appendChild(title);
-		}
-		else {
+		if (this.buses.stopName !== null) {
 			this.config.header = this.buses.stopName;
 		}
 

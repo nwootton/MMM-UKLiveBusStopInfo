@@ -54,7 +54,6 @@ The following is taken from the TransportAPI documentation [here](https://develo
 |`nextBuses`|String. Set this to 'yes' if you want to enable expensive calls to NextBuses. See notes below.<br><br>**Default:** 'no'|
 |`showRealTime`| Boolean. Show realtime departure info when used with NextBuses. <br><br>**Default:** false|
 |`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. Only accurate when used with NextBuses <br><br>**Default:** false|
-|`useBusStopName `|Boolean. This replaces the normal 'DEPARTURES' header text with the name of the bus stop. If left as false, the bus stop name will be shown under the header. <br><br>**Default:** false|
 
 
 ## Notes ##
@@ -75,3 +74,4 @@ If there are issue getting data out of the module I'm ALWAYS going to ask the fo
 3. Do you know the ATCOCode for the bus stop??
 4. If you use the live api documentation [here](https://developer.transportapi.com/docs?raml=https://transportapi.com/v3/raml/transportapi.raml##uk_bus_stop_atcocode_live_json) and put in the info you want to use does it respond without an error?
 5. Is the info in your config the same as that you’ve used successfully in the live api docs?
+6. Include the ATCOCode in the report - each operator supplies information slightly differently. While TransportAPI does catch most of these, I might not have.
