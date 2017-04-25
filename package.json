@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/nwootton/MMM-UKLiveBusStopInfo#readme",
   "dependencies": {
+    "moment-range": "^3.0.3",
     "request": "^2.81.0"
   }
 }

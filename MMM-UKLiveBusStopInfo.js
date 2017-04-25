@@ -16,22 +16,23 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		animationSpeed: 2000,
 		fade: true,
 		fadePoint: 0.25, // Start on 1/4th of the list.
-   	initialLoadDelay: 0, // start delay seconds.
+   		initialLoadDelay: 0, // start delay seconds.
 
-    apiBase: 'https://transportapi.com/v3/uk/bus/stop/',
+    	apiBase: 'https://transportapi.com/v3/uk/bus/stop/',
 
 		atcocode:		'', 	// atcocode for bus stop
 		app_key: 		'', 	// TransportAPI App Key
-    app_id: 		'', 	// TransportAPI App ID
+    	app_id: 		'', 	// TransportAPI App ID
 		group:			'no', //Stops buses being grouped by route
 
 		limit: 			'', 	//Maximum number of results to display
 
-		nextBuses: 			'no', 		//Use NextBuses API calls
+		nextBuses: 		'no', 		//Use NextBuses API calls
 		showRealTime: 	false,		//expanded info when used with NextBuses
-		showDelay: 			false,		//expanded info when used with NextBuses
+		showDelay: 		false,		//expanded info when used with NextBuses
 
-		header:					'Departures'
+		header:			'Departures',
+		smartTime:		''
 	},
 
 	// Define required scripts.
@@ -56,7 +57,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		// Set locale.
 		moment.locale(config.language);
 
-    this.buses = {};
+    	this.buses = {};
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
 
@@ -64,12 +65,22 @@ Module.register("MMM-UKLiveBusStopInfo",{
 
 		this.url = encodeURI(this.config.apiBase + this.config.atcocode + '/live.json' + this.getParams());
 
+		if (this.config.nextBuses.toLowerCase() === 'auto'){
+			//Pass smartTime info
+			this.smartTime = this.config.smartTime;
+		}
+		else {
+			//Add nextBuses flag from config
+			this.url += "&nextbuses=" + this.config.nextBuses.toLowerCase();
+			this.smartTime = null;
+		}
+
 		this.updateBusInfo(this);
 	},
 
 	// updateBusInfo
 	updateBusInfo: function(self) {
-		self.sendSocketNotification('GET_BUSINFO', {'url':self.url});
+		self.sendSocketNotification('GET_BUSINFO', {'url':self.url, 'smartTime': self.smartTime});
 	},
 
 	// Override dom generator.
@@ -302,7 +313,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		params += "&app_key=" + this.config.app_key;
 		params += "&limit=" + this.config.limit;
 		params += "&group=" + this.config.group;
-		params += "&nextbuses=" + this.config.nextBuses.toLowerCase();
+		//params += "&nextbuses=" + this.config.nextBuses.toLowerCase();
 
 		//Log.info(params);
 		return params;
