@@ -21,16 +21,17 @@ To use this module, add it to the modules array in the `config/config.js` file:
 ```javascript
 modules: [
     {
-		module: 'MMM-UKLiveBusStopInfo',
-		position: 'bottom_left',
+		module: 	'MMM-UKLiveBusStopInfo',
+		position: 	'bottom_left',
+		header:		'Departures',			//Optional - delete this line to turn OFF the header completely
 		config: {
-			atcocode: 	'490015165B', 		// ATCO code for specific bus stop
-			app_id: 	'', 				        // TransportAPI App ID
-			app_key: 	'', 	              // TransportAPI App Key
-			limit: 		5,  					      // Optional - Maximum results to display.
-      nextBuses: 'no',              // Optional - Use expensive RealTime info from NextBuses
-      showRealTime: false,          // Optional - show realtime departure info
-      showDelay: false              // Optional - show delay in minutes based on Real Time info vs Time table
+			atcocode: 		'490015165B', 		// ATCO code for specific bus stop
+			app_id: 		'', 				// TransportAPI App ID
+			app_key: 		'', 	            // TransportAPI App Key
+			limit: 			5, 					// Optional - Maximum results to display.
+      		nextBuses: 		'no',              	// Optional - Use expensive RealTime info from NextBuses
+      		showRealTime: 	false,          	// Optional - show realtime departure info
+      		showDelay: 		false              	// Optional - show delay in minutes based on Real Time info vs Time table
 		}
 	},
 ]
