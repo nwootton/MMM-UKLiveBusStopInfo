@@ -2,7 +2,11 @@ var request = require('request');
 
 function returnReal(atco) {
 
-    var url = "https://transportapi.com/v3/uk/bus/stop/"+ atco + "/live.json?app_id=03bf8009&app_key=d9307fd91b0247c607e098d5effedc97&group=no&nextbuses=no";
+    //These are the demo API keys - Please replace with your own
+    var app_id = '03bf8009';
+    var app_key = 'd9307fd91b0247c607e098d5effedc97';
+
+    var url = "https://transportapi.com/v3/uk/bus/stop/"+ atco + "/live.json?app_id="+app_id+"&app_key="+app_key+"&group=no&nextbuses=no";
 
     request({url:url, method: 'GET'}, function(error, response, body) {
       if(!error && response.statusCode == 200) {
@@ -295,7 +299,7 @@ function processBuses(data) {
 
 //var myData = returnFull("123456");
 //var myData = returnEmptyArray("123456");
-var myData = returnNoArray("123456");
+//var myData = returnNoArray("123456");
 //var myData = returnNoDepartures("123456");
 
 //var myData = null;
@@ -304,6 +308,6 @@ var myData = returnNoArray("123456");
 //var myData = "String";
 //var myData = 1234;
 
-console.log(processBuses(myData));
+//console.log(processBuses(myData));
 
-//returnReal("490006830W");
+returnReal("490006830W");
