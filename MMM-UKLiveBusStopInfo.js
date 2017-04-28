@@ -228,17 +228,17 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		this.buses.message = null;
 
 		//Check we have data back from API
-		if (typeof data !== 'undefined' || data !== null) {
+		if (typeof data !== 'undefined' && data !== null) {
 
 			//Figure out Bus Stop Name
 			//Define empty stop name
 			var stopName = "";
 
-			if (typeof data.name !== 'undefined' || data.name !== null) {
+			if (typeof data.name !== 'undefined' && data.name !== null) {
 				//Populate with stop name returned by TransportAPI info
 				stopName = data.name;
 			}
-			else if (typeof data.stop_name !== 'undefined' || data.stop_name !== null) {
+			else if (typeof data.stop_name !== 'undefined' && data.stop_name !== null) {
 				//Populate with stop name returned by TransportAPI info
 				stopName = data.stop_name + " ("+ data.bearing +")";
 			}
@@ -250,90 +250,101 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			this.buses.stopName = stopName;
 
 			//Check we have route info
-			if (typeof data.departures !== 'undefined' || data.departures !== null) {
+			if (typeof data.departures !== 'undefined' && data.departures !== null) {
 
 				//... and some departures
-				if (data.departures.all.length > 0) {
+				if (typeof data.departures.all !== 'undefined' && data.departures.all !== null) {
 
-					//Figure out how long the results are
-					var counter = data.departures.all.length;
+					if(data.departures.all.length > 0) {
+						//Figure out how long the results are
+						var counter = data.departures.all.length;
 
-					//See if there are more results than requested and limit if necessary
-					if (counter > this.config.limit) {
-						counter = this.config.limit;
-					}
-
-					//Loop over the results up to the max - either counter of returned
-					for (var i = 0; i < counter; i++) {
-
-						var bus = data.departures.all[i];
-						var delay = null;
-
-						var thisDate;
-						var thisTimetableTime;
-						var thisLiveTime;
-
-						if(this.config.nextBuses.toLowerCase() === "yes") {
-							//NextBuses Is On, so we need to use best & expected values
-							//Date
-							thisDate = bus.expected_departure_date;
-							//timetabled time
-							thisTimetableTime = bus.best_departure_estimate;
-							//live time
-							thisLiveTime = bus.expected_departure_time;
-
+						//See if there are more results than requested and limit if necessary
+						if (counter > this.config.limit) {
+							counter = this.config.limit;
 						}
-						else {
-							//NextBuses Is Off, so we need to use aimed & expected values
-							//Date
-							thisDate = bus.date;
-							//timetabled time
-							if (bus.aimed_departure_time !== null) {
-								thisTimetableTime = bus.aimed_departure_time;
+
+						//Loop over the results up to the max - either counter of returned
+						for (var i = 0; i < counter; i++) {
+
+							var bus = data.departures.all[i];
+							var delay = null;
+
+							var thisDate;
+							var thisTimetableTime;
+							var thisLiveTime;
+
+							if(this.config.nextBuses.toLowerCase() === "yes") {
+								//NextBuses Is On, so we need to use best & expected values
+								//Date
+								thisDate = bus.expected_departure_date;
+								//timetabled time
+								thisTimetableTime = bus.best_departure_estimate;
+								//live time
+								thisLiveTime = bus.expected_departure_time;
+
 							}
 							else {
-								thisTimetableTime = bus.expected_departure_time;
+								//NextBuses Is Off, so we need to use aimed & expected values
+								//Date
+								thisDate = bus.date;
+								//timetabled time
+								if (bus.aimed_departure_time !== null) {
+									thisTimetableTime = bus.aimed_departure_time;
+								}
+								else {
+									thisTimetableTime = bus.expected_departure_time;
+								}
+								//live time
+								thisLiveTime = bus.best_departure_estimate;
 							}
-							//live time
-							thisLiveTime = bus.best_departure_estimate;
+						/*
+							if(this.config.debug){
+								Log.warn('===================================');
+								Log.warn(this.config.nextBuses.toLowerCase());
+								Log.warn(bus);
+								Log.warn(thisDate);
+								Log.warn(thisTimetableTime);
+								Log.warn(thisLiveTime);
+								Log.warn('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+							}
+						*/
+							//Only do these calc if showDelay is set in the config
+							if (this.config.showDelay) {
+								var arrRTDate = thisDate.split('-');
+								var arrRTTime = thisLiveTime.split(':');
+
+								var arrTTDate = thisDate.split('-');
+								var arrTTTime = thisTimetableTime.split(':');
+
+								var RTDate = new Date( arrRTDate[0], arrRTDate[1], arrRTDate[2], arrRTTime[0], arrRTTime[1]);
+								var TTDate = new Date( arrTTDate[0], arrTTDate[1], arrTTDate[2], arrTTTime[0], arrTTTime[1]);
+
+								delay = (((TTDate - RTDate) / 1000) / 60);
+							}
+
+							//Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
+							this.buses.data.push({
+								routeName: bus.line_name,
+								direction: bus.direction,
+								timetableDeparture: thisTimetableTime,
+								expectedDeparture: thisLiveTime,
+								delay: delay
+							});
 						}
-					/*
-						if(this.config.debug){
-							Log.warn('===================================');
-							Log.warn(this.config.nextBuses.toLowerCase());
-							Log.warn(bus);
-							Log.warn(thisDate);
-							Log.warn(thisTimetableTime);
-							Log.warn(thisLiveTime);
-							Log.warn('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-						}
-					*/
-						//Only do these calc if showDelay is set in the config
-						if (this.config.showDelay) {
-							var arrRTDate = thisDate.split('-');
-							var arrRTTime = thisLiveTime.split(':');
-
-							var arrTTDate = thisDate.split('-');
-							var arrTTTime = thisTimetableTime.split(':');
-
-							var RTDate = new Date( arrRTDate[0], arrRTDate[1], arrRTDate[2], arrRTTime[0], arrRTTime[1]);
-							var TTDate = new Date( arrTTDate[0], arrTTDate[1], arrTTDate[2], arrTTTime[0], arrTTTime[1]);
-
-							delay = (((TTDate - RTDate) / 1000) / 60);
-						}
-
-						//Log.info(bus.line_name + ", " + bus.direction + ", " + bus.expected_departure_time);
-						this.buses.data.push({
-							routeName: bus.line_name,
-							direction: bus.direction,
-							timetableDeparture: thisTimetableTime,
-							expectedDeparture: thisLiveTime,
-							delay: delay
-						});
+					}
+					else {
+						//No departures structure - set error message
+	                    this.buses.message = "No departure info returned";
+	                    if(this.config.debug) {
+	                        console.error("=======LEVEL 4=========");
+	                        console.error(this.buses);
+	                        console.error("^^^^^^^^^^^^^^^^^^^^^^^");
+	                    }
 					}
 				}
 				else {
-					//No departures returned - set message
+					//No departures returned - set error message
 					this.buses.message = "No departures scheduled";
 					if(this.config.debug) {
 						Log.error("=======LEVEL 3=========");
@@ -343,7 +354,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 				}
 			}
 			else {
-				//No departures returned - set message
+				//No departures returned - set error message
 				this.buses.message = "No info about the stop returned";
 				if(this.config.debug) {
 					Log.error("=======LEVEL 2=========");
@@ -353,7 +364,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 			}
 		}
 		else {
-			//No data returned - set message
+			//No data returned - set error message
 			this.buses.message = "No data returned";
 			if(this.config.debug) {
 				Log.error("=======LEVEL 1=========");
