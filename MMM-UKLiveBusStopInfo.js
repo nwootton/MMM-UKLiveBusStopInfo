@@ -34,8 +34,8 @@ Module.register("MMM-UKLiveBusStopInfo",{
 		debug:			false,		// Turn on extended logging in console
 
 		header:			'Departures',
-		smartTime:		''
-		
+		smartTime:		null
+
 	},
 
 	// Define required scripts.
