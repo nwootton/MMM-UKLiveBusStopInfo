@@ -31,7 +31,6 @@ module.exports = NodeHelper.create({
         console.log('MMM-UKLiveBusStopInfo helper started ...');
     },
 
-
     checkSchedule: function(payload) {
 
         //Define url to modify

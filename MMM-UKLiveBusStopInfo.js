@@ -411,7 +411,6 @@ Module.register("MMM-UKLiveBusStopInfo", {
         }, nextLoad);
     },
 
-
     // Process data returned
     socketNotificationReceived: function(notification, payload) {
         if (notification === 'BUS_DATA' && payload.url === this.url) {
