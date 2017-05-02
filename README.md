@@ -6,12 +6,12 @@ Magic Mirror Module for UK bus information. Returns real-time info about a SPECI
 
 ![](./images/Current_version.png)
 
-## Using the module
+## Using the SmartTime version of the module
 
 Git clone from this repository into the modules sub-directory of the Magic Mirror installation, change directory into the newly cloned code and then run npm install.
 
 ```bash
-git clone https://github.com/nwootton/MMM-UKLiveBusStopInfo.git
+git clone -b SmartTime https://github.com/nwootton/MMM-UKLiveBusStopInfo.git
 cd MMM-UKLiveBusStopInfo
 npm install
 ```
@@ -29,10 +29,14 @@ modules: [
 			app_id: 		'', 				// TransportAPI App ID
 			app_key: 		'', 	            // TransportAPI App Key
 			limit: 			5, 					// Optional - Maximum results to display.
-      		nextBuses: 		'no',              	// Optional - Use expensive RealTime info from NextBuses
       		showRealTime: 	false,          	// Optional - show realtime departure info
       		showDelay: 		false              	// Optional - show delay in minutes based on Real Time info vs Time table
-		}
+      		smartTime: {
+                    start: '07:45:00',
+                    end: '09:00:00',
+                    days: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri']
+          }
+         }	// Optional - specify when to use the expensive NextBuses info to ensure the most accurate info at the most important time
 	},
 ]
 ```
@@ -55,6 +59,7 @@ The following is taken from the TransportAPI documentation [here](https://develo
 |`nextBuses`|String. Set this to 'yes' if you want to enable expensive calls to NextBuses. See notes below.<br><br>**Default:** 'no'|
 |`showRealTime`| Boolean. Show realtime departure info when used with NextBuses. <br><br>**Default:** false|
 |`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. Only accurate when used with NextBuses <br><br>**Default:** false|
+|`smartTime`| JSON. Use this to specify the start and end times for specific days that require more accuracy. This would be the time of day that you want the most accurate info about your bus stop arrivals. <br /> This will **NOT** override nextbuses = 'yes' <br /><br />**Default:** null|
 
 
 ## Notes ##
