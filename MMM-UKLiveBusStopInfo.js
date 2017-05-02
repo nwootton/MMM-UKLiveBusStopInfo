@@ -80,7 +80,7 @@ Module.register("MMM-UKLiveBusStopInfo", {
 
     // updateBusInfo
     updateBusInfo: function(self) {
-        self.sendSocketNotification('GET_BUSINFO', { 'url': self.url, 'smartTime': self.config.smartTime, 'atco': self.config.atcocode });
+        self.sendSocketNotification('GET_BUSINFO', { 'url': self.url, 'smartTime': self.config.smartTime });
     },
 
     // Override dom generator.

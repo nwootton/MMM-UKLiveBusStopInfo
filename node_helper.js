@@ -33,77 +33,71 @@ module.exports = NodeHelper.create({
 
 
     checkSchedule: function(payload) {
+
+        //Define url to modify
+        var workingURL = payload.url;
+
         //Is smartTime object populated?
         if (typeof payload.smartTime !== 'undefined' && payload.smartTime !== null) {
-            console.log("In SmartTime for stop " + payload.atco);
 
             //Get today & day of week (DoW)
             var today = moment().format('YYYY-MM-DD');
             var DoW = moment().format('ddd');
 
-            console.log(today);
-            console.log(DoW);
+            //console.log(today);
+            //console.log(DoW);
 
             //See if DoW matches requested
             if (payload.smartTime.days.indexOf(DoW) === -1) {
-                //Not requested for today
-                console.log('Not today');
+                //SmartTime NOT requested for today
             } else {
-                //Today is requested
-                console.log('Yay today');
-
+                //Today is requested in SmartTime
                 //Loads as local, Outputs as UTC
                 var startRange = moment(today + 'T' + payload.smartTime.start).toDate();
                 var endRange = moment(today + 'T' + payload.smartTime.end).toDate();
 
-                console.log(startRange);
-                console.log(endRange);
+                //console.log(startRange);
+                //console.log(endRange);
 
                 //Define start and end of range
                 var range = moment.range(startRange, endRange);
 
-                //Get now()... NOT in UTC
+                //Get now()
                 var when = moment();
 
                 //console.log(when);
 
                 //See if now() is between start and end range
                 if (when.within(range)) {
-                    console.log("NextBuses IS OOOOOONNNNN");
-
                     //Amend url with nextBuses ON
-                    //payload.url += "&nextbuses=yes";
-                    payload.url = payload.url.replace(/(nextbuses=)[^\&]+/, '$1' + 'yes');
+                    workingURL = workingURL.replace(/(nextbuses=)[^\&]+/, '$1' + 'yes');
 
 
                 } else {
-                    console.log("Not at this time");
-
                     //Amend url with nextBuses OFF
-                    //payload.url += "&nextbuses=no";
-                    payload.url = payload.url.replace(/(nextbuses=)[^\&]+/, '$1' + 'no');
+                    workingURL = workingURL.replace(/(nextbuses=)[^\&]+/, '$1' + 'no');
                 }
             }
         } else {
-            //Assumes that config is either yes or no for nextBuses
-            console.log("In manual config for stop " + payload.atco);
+            /*
+                Assumes that config is either yes or no for nextBuses
+                So doesn't need to do anything
+            */
         }
-
-        console.log(payload.atco + ": " + payload.url);
-        this.getTimetable(payload.url);
+        this.getTimetable(workingURL, payload.url);
     },
 
     /* getTimetable()
      * Requests new data from TransportAPI.com
      * Sends data back via socket on succesfull response.
      */
-    getTimetable: function(url) {
+    getTimetable: function(workingURL, originalURL) {
         var self = this;
         var retry = true;
 
-        request({ url: url, method: 'GET' }, function(error, response, body) {
+        request({ url: workingURL, method: 'GET' }, function(error, response, body) {
             if (!error && response.statusCode == 200) {
-                self.sendSocketNotification('BUS_DATA', { 'data': JSON.parse(body), 'url': url });
+                self.sendSocketNotification('BUS_DATA', { 'data': JSON.parse(body), 'url': originalURL });
             }
         });
     },
