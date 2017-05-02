@@ -354,7 +354,7 @@ Module.register("MMM-UKLiveBusStopInfo",{
 				}
 			}
 			else {
-				//No departures returned - set error message
+				//No info returned - set error message
 				this.buses.message = "No info about the stop returned";
 				if(this.config.debug) {
 					Log.error("=======LEVEL 2=========");
