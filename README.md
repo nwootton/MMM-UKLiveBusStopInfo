@@ -75,4 +75,4 @@ If there are issue getting data out of the module I'm ALWAYS going to ask the fo
 3. Do you know the ATCOCode for the bus stop??
 4. If you use the live api documentation [here](https://developer.transportapi.com/docs?raml=https://transportapi.com/v3/raml/transportapi.raml##uk_bus_stop_atcocode_live_json) and put in the info you want to use does it respond without an error?
 5. Is the info in your config the same as that you’ve used successfully in the live api docs?
-6. Include the ATCOCode in the report - each operator supplies information slightly differently. While TransportAPI does catch most of these, I might not have.
+6. Please provide your config - at the minimum include the ATCOCode in the report - each operator supplies information slightly differently. While TransportAPI does catch most of these, I might not have.
