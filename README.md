@@ -55,6 +55,7 @@ The following is taken from the TransportAPI documentation [here](https://develo
 |`nextBuses`|String. Set this to 'yes' if you want to enable expensive calls to NextBuses. See notes below.<br><br>**Default:** 'no'|
 |`showRealTime`| Boolean. Show realtime departure info when used with NextBuses. <br><br>**Default:** false|
 |`showDelay`| Boolean. Show delay in minutes based on Real Time info vs Time table. Only accurate when used with NextBuses <br><br>**Default:** false|
+|`showBearing`| Boolean. Show compass direction/bearing of bus. <br><br>**Default:** false|
 
 
 ## Notes ##
