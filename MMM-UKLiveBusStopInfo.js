@@ -30,6 +30,7 @@ Module.register("MMM-UKLiveBusStopInfo", {
         nextBuses: 'no', //Use NextBuses API calls
         showRealTime: false, //expanded info when used with NextBuses
         showDelay: false, //expanded info when used with NextBuses
+        showBearing: false, //show compass direction bearing on stop name
         maxDelay: -60, //if a bus is delayed more than 60 minutes exclude it
         debug: false
     },
@@ -234,6 +235,11 @@ Module.register("MMM-UKLiveBusStopInfo", {
             if (typeof data.name !== 'undefined' && data.name !== null) {
                 //Populate with stop name returned by TransportAPI info
                 stopName = data.name;
+
+                if(this.config.showBearing) {
+                    stopName = stopName + " (" + data.bearing + ")";
+                }
+
             } else if (typeof data.stop_name !== 'undefined' && data.stop_name !== null) {
                 //Populate with stop name returned by TransportAPI info
                 stopName = data.stop_name + " (" + data.bearing + ")";
