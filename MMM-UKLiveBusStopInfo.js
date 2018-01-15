@@ -233,15 +233,16 @@ Module.register("MMM-UKLiveBusStopInfo", {
             var stopName = "";
 
             if (typeof data.name !== 'undefined' && data.name !== null) {
-                //Populate with stop name returned by TransportAPI info
+                //Populate with stop name returned by TransportAPI info - Stop name & indicator combined
                 stopName = data.name;
 
-                if(this.config.showBearing) {
+                //If requested, append the bearing as well - assuming it is there!
+                if((this.config.showBearing) && (typeof data.bearing !== 'undefined' && data.bearing !== null)) {
                     stopName = stopName + " (" + data.bearing + ")";
                 }
 
             } else if (typeof data.stop_name !== 'undefined' && data.stop_name !== null) {
-                //Populate with stop name returned by TransportAPI info
+                //Populate with stop name and bearing returned by TransportAPI info
                 stopName = data.stop_name + " (" + data.bearing + ")";
             } else {
                 //Default
