@@ -68,9 +68,11 @@ Module.register("MMM-UKLiveBusStopInfo", {
         this.updateBusInfo(this);
     },
 
-    // updateBusInfo
+    // updateBusInfo IF module is visible (allows saving credits when using MMM-ModuleScheduler to hide the module)
     updateBusInfo: function(self) {
-        self.sendSocketNotification('GET_BUSINFO', { 'url': self.url });
+        if (this.hidden != true) {
+            self.sendSocketNotification('GET_BUSINFO', { 'url': self.url });
+        }
     },
 
     // Override dom generator.
