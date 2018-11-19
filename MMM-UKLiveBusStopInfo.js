@@ -168,8 +168,13 @@ Module.register("MMM-UKLiveBusStopInfo", {
                         delayCell.innerHTML = Math.abs(bus.delay) + label + "early";
                         delayCell.className = "early";
                     } else {
-                        delayCell.innerHTML = " On Time ";
-                        delayCell.className = "nonews";
+                        if (this.config.nextBuses.toLowerCase() === "yes") {
+                            delayCell.innerHTML = " On Time ";
+                            delayCell.className = "nonews";
+                        } else {
+                            delayCell.innerHTML = " Scheduled";
+                            delayCell.className = "nonews";
+                        }
                     }
 
                     row.appendChild(delayCell);
@@ -279,13 +284,22 @@ Module.register("MMM-UKLiveBusStopInfo", {
                             var thisLiveTime;
 
                             if (this.config.nextBuses.toLowerCase() === "yes") {
-                                //NextBuses Is On, so we need to use best & expected values
+                                //NextBuses Is On, so we need to use best & expected values - assuming they're present!
                                 //Date
-                                thisDate = bus.expected_departure_date;
+                                if(bus.expected_departure_date !== null){
+                                    thisDate = bus.expected_departure_date;
+                                } else {
+                                    Log.error('NextBus info is missing - falling back to timetabled info');
+                                    thisDate = bus.date;
+                                }
                                 //timetabled time
                                 thisTimetableTime = bus.best_departure_estimate;
                                 //live time
-                                thisLiveTime = bus.expected_departure_time;
+                                if (bus.expected_departure_time !== null) {
+                                    thisLiveTime = bus.expected_departure_time;
+                                } else {
+                                    thisLiveTime = bus.best_departure_estimate;
+                                }
 
                             } else {
                                 //NextBuses Is Off, so we need to use aimed & expected values
