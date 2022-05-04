@@ -1,6 +1,7 @@
 # Obtaining The AtcoCode for your bus stop #
 
-Go to [OpenstreetMap.org](https://www.openstreetmap.org)
+Go to [OpenstreetMap.org](https://www.openstreetmap.org).
+
 On the right hand side of the screen, select the layers option and then the "Transport Map"
 
 ![Screenshot 2022-05-04 at 09 10 17](https://user-images.githubusercontent.com/7591978/166644210-3f23b68a-9292-44e9-8f0e-522976654642.png)
